@@ -1,0 +1,84 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator nestjsDto {
+  provider                        = "prisma-generator-nestjs-dto"
+  output                          = "../src/generated"
+  prismaClientImportPath          = ""
+  outputToNestJsResourceStructure = "true"
+  flatResourceStructure           = "false"
+  exportRelationModifierClasses   = "true"
+  reExport                        = "false"
+  generateFileTypes               = "all"
+  createDtoPrefix                 = "Create"
+  updateDtoPrefix                 = "Update"
+  dtoSuffix                       = "Dto"
+  entityPrefix                    = ""
+  entitySuffix                    = ""
+  classValidation                 = "true"
+  fileNamingStyle                 = "camel"
+  noDependencies                  = "false"
+  outputType                      = "class"
+  definiteAssignmentAssertion     = "false"
+  requiredResponseApiProperty     = "true"
+  prettier                        = "true"
+  wrapRelationsAsType             = "true"
+  showDefaultValues               = "false"
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  /// @DtoReadOnly
+  id String @id @default(uuid())
+
+  /// @DtoReadOnly
+  createdAt DateTime @default(now())
+
+  /// @DtoReadOnly
+  updatedAt DateTime @updatedAt
+
+  /// @String
+  /// @minimum 3
+  /// @minLength 3
+  username String @unique
+
+  /// @String
+  email String @unique
+
+  /// @String
+  /// @minimum 5
+  /// @minLength 5
+  password String
+
+  sessions Session[]
+}
+
+model Session {
+  /// @DtoReadOnly
+  id String @id @default(uuid())
+
+  /// @DtoReadOnly
+  createdAt DateTime @default(now())
+
+  /// @DtoReadOnly
+  updatedAt DateTime @updatedAt
+
+  /// @String
+  accessToken  String @unique
+  /// @String
+  refreshToken String @unique
+
+  user   User?   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId String?
+}
