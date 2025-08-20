@@ -79,3 +79,9 @@ export class SignInDto {
   @MinLength(5)
   password: string
 }
+
+export class LocalAuthDto {
+  @ApiProperty()
+  @IsUUID()
+  id: string
+}
