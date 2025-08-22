@@ -1,5 +1,4 @@
 import { Injectable } from '@nestjs/common'
-import { hash, verify } from 'argon2'
 import { PageDto } from 'src/common/dto/page.dto'
 import { PageMetaDto } from 'src/common/dto/pageMeta.dto'
 import { PageOptionsDto } from 'src/common/dto/pageOptions.dto'
@@ -9,10 +8,6 @@ import { PrismaService } from 'src/prisma/prisma.service'
 @Injectable()
 export class UserService {
   constructor(private readonly prismaService: PrismaService) {}
-
-  comparePassword(encryptedPassword: string, password: string) {
-    return verify(encryptedPassword, password)
-  }
 
   async listUsers(pageOptionsDto: PageOptionsDto) {
     const { search, skip, order, take } = pageOptionsDto
@@ -40,9 +35,8 @@ export class UserService {
   }
 
   async createUser(dto: CreateUserDto) {
-    const password = await hash(dto.password)
     return this.prismaService.user.create({
-      data: { ...dto, password },
+      data: dto,
     })
   }
 

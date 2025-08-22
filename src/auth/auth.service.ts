@@ -5,7 +5,6 @@ import {
 } from '@nestjs/common'
 import { ConfigService } from '@nestjs/config'
 import { JwtService } from '@nestjs/jwt'
-import { CreateUserDto } from 'src/generated/user/dto/create-user.dto'
 import { SessionService } from 'src/session/session.service'
 import { UserService } from 'src/user/user.service'
 
@@ -32,43 +31,15 @@ export class AuthService {
     ])
   }
 
-  private async createUser(dto: SignUpDto) {
-    const user = await this.userService.createUser(dto)
-    return user
-  }
-
-  async validateGoogleUser(googleUser: SignUpDto) {
-    const user = await this.userService.findByEmail(googleUser.email)
-
-    if (user) {
-      return user
-    }
-
-    return this.createUser(googleUser)
-  }
-
-  async validateUser(
-    email: string,
-    password: string
-  ): Promise<JwtDto> {
-    const user = await this.userService.findByEmail(email)
+  async validateUser(username: string): Promise<JwtDto> {
+    const user = await this.userService.findByUsername(username)
     if (!user) {
       throw new UnauthorizedException('User not found')
-    }
-
-    const isPasswordCorrect = await this.userService.comparePassword(
-      user.password,
-      password
-    )
-
-    if (!isPasswordCorrect) {
-      throw new UnauthorizedException('Incorrect password')
     }
 
     return {
       sub: user.id,
       username: user.username,
-      email: user.email,
     }
   }
 
@@ -118,7 +89,7 @@ export class AuthService {
     return { sub, ...rest }
   }
 
-  async signUp(createdUserDto: CreateUserDto) {
+  async signUp(createdUserDto: SignUpDto) {
     const isUsernameExists = await this.userService.findByUsername(
       createdUserDto.username
     )
@@ -126,14 +97,7 @@ export class AuthService {
       throw new BadRequestException('This username is already taken')
     }
 
-    const isEmailExists = await this.userService.findByEmail(
-      createdUserDto.email
-    )
-    if (isEmailExists) {
-      throw new BadRequestException('This email is already taken')
-    }
-
-    return this.createUser(createdUserDto)
+    return this.userService.createUser(createdUserDto)
   }
 
   async signIn(payload: JwtDto): Promise<TokensDto> {

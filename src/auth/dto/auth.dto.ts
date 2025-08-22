@@ -1,11 +1,6 @@
-import { ApiProperty } from '@nestjs/swagger'
-import {
-  IsEmail,
-  IsNotEmpty,
-  IsString,
-  IsUUID,
-  MinLength,
-} from 'class-validator'
+import { ApiProperty, OmitType } from '@nestjs/swagger'
+import { IsString, IsUUID, MinLength } from 'class-validator'
+import { CreateUserDto } from 'src/generated/user/dto/create-user.dto'
 
 export class JwtDto {
   @ApiProperty()
@@ -16,11 +11,11 @@ export class JwtDto {
   @IsString()
   @MinLength(3)
   username: string
-
-  @ApiProperty()
-  @IsEmail()
-  email: string
 }
+
+export class SignUpDto extends OmitType(CreateUserDto, ['email']) {}
+
+export class SignInDto extends OmitType(CreateUserDto, ['email']) {}
 
 export class TokensDto {
   @ApiProperty()
@@ -36,52 +31,4 @@ export class RefreshTokenDto {
   @ApiProperty()
   @IsString()
   refreshToken: string
-}
-
-export class SignUpDto {
-  @ApiProperty({
-    minimum: 3,
-    minLength: 3,
-    type: 'string',
-  })
-  @IsNotEmpty()
-  @MinLength(3)
-  @IsString()
-  username: string
-
-  @ApiProperty({
-    minimum: 5,
-    minLength: 5,
-    type: 'string',
-  })
-  @IsNotEmpty()
-  @IsString()
-  @MinLength(5)
-  password: string
-
-  @ApiProperty({
-    type: 'string',
-  })
-  @IsNotEmpty()
-  @IsString()
-  @IsEmail()
-  email: string
-}
-
-export class SignInDto {
-  @ApiProperty()
-  @IsString()
-  @IsEmail()
-  email: string
-
-  @ApiProperty()
-  @IsString()
-  @MinLength(5)
-  password: string
-}
-
-export class LocalAuthDto {
-  @ApiProperty()
-  @IsUUID()
-  id: string
 }

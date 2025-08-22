@@ -54,12 +54,7 @@ model User {
   username String @unique
 
   /// @String
-  email String @unique
-
-  /// @String
-  /// @minimum 5
-  /// @minLength 5
-  password String
+  email String? @unique
 
   sessions Session[]
 }

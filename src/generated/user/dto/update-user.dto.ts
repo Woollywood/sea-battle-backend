@@ -14,17 +14,9 @@ export class UpdateUserDto {
   @ApiProperty({
     type: 'string',
     required: false,
+    nullable: true,
   })
   @IsOptional()
   @IsString()
-  email?: string
-  @ApiProperty({
-    minimum: 5,
-    minLength: 5,
-    type: 'string',
-    required: false,
-  })
-  @IsOptional()
-  @IsString()
-  password?: string
+  email?: string | null
 }

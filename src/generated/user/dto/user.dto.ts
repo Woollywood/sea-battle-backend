@@ -23,12 +23,7 @@ export class UserDto {
   username: string
   @ApiProperty({
     type: 'string',
+    nullable: true,
   })
-  email: string
-  @ApiProperty({
-    minimum: 5,
-    minLength: 5,
-    type: 'string',
-  })
-  password: string
+  email: string | null
 }

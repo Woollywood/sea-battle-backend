@@ -4,7 +4,6 @@ import { JwtModule } from '@nestjs/jwt'
 import { SessionModule } from 'src/session/session.module'
 import { UserModule } from 'src/user/user.module'
 
-import { GoogleStrategy } from './strategies/google.strategy'
 import { JwtStrategy } from './strategies/jwt.strategy'
 import { LocalStrategy } from './strategies/local.strategy'
 import { RefreshStrategy } from './strategies/refresh.strategy'
@@ -33,7 +32,6 @@ import { AuthService } from './auth.service'
     LocalStrategy,
     JwtStrategy,
     RefreshStrategy,
-    GoogleStrategy,
   ],
   exports: [AuthService],
   controllers: [AuthController],
